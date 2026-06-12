@@ -15,31 +15,28 @@ import json
 import random
 
 # Coordinates --> near Downtown Dubai
-current_lat = 25.1972
-current_lng = 55.2744
-vehicle_id = "DXB-TRUCK-001"
-fuel_level = 100.0
+vehicles = [
+    {"vehicle_id": "DXB-TRUCK-001", "lat": 25.1972, "lng": 55.2744, "fuel": 100.0},
+    {"vehicle_id": "DXB-TRUCK-002", "lat": 25.2048, "lng": 55.2708, "fuel": 100.0},
+    {"vehicle_id": "DXB-TRUCK-003", "lat": 25.1224, "lng": 55.2301, "fuel": 100.0},
+]
 
 print("Starting IoT Vehicle Simulator... Press CTRL+C to stop.\n")
 
 while True:
-    current_lat += 0.0002
-    current_lng += 0.0003
+    for vehicle in vehicles:
+        current_time = int(time.time())
 
-    fuel_level -= random.uniform(0.1, 0.3)
-    fuel_level = max(0, round(fuel_level, 2))
+        vehicle["lat"] += 0.0002
+        vehicle["lng"] += 0.0003
 
-    current_time = int(time.time())
+        vehicle["fuel"] -= random.uniform(0.1, 0.3)
+        vehicle["fuel"] = max(0, round(vehicle["fuel"], 2))
 
-    telemetry_payload = {
-        "vehicle_id": vehicle_id,
-        "lat": round(current_lat, 6),
-        "lng": round(current_lng, 6),
-        "fuel": fuel_level,
-        "timestamp": current_time,
-    }
+        vehicle.update({"speed": random.randint(60, 80), "timestamp": current_time})
 
-    json_string = json.dumps(telemetry_payload)
-    print(json_string)
+        json_string = json.dumps(vehicle)
+        print(json_string)
 
+    print("-" * 50)
     time.sleep(3)

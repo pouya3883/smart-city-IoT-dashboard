@@ -1,6 +1,7 @@
 import time
-import json
 import random
+import requests
+# import json
 
 # Coordinates --> near Downtown Dubai
 vehicles = [
@@ -10,6 +11,8 @@ vehicles = [
 ]
 
 print("Starting IoT Vehicle Simulator... Press CTRL+C to stop.\n")
+
+url = "http://127.0.0.1:8000/telemetry"
 
 while True:
     for vehicle in vehicles:
@@ -25,8 +28,11 @@ while True:
 
         vehicle.update({"speed": random.randint(60, 80), "timestamp": current_time})
 
-        json_string = json.dumps(vehicle)
-        print(json_string)
+        response = requests.post(url, json=vehicle)
+
+        print(
+            f"Broadcasted {vehicle['vehicle_id']} -> Server Response: {response.status_code}"
+        )
 
     print("-" * 50)
     time.sleep(3)
